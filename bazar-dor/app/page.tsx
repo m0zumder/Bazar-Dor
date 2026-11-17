@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { io } from "next/cache";
+import { connection } from "next/server";
 import { Suspense } from "react";
 import AuthNavigation from "@/app/components/AuthNavigation";
 
@@ -44,7 +44,7 @@ function money(value: number) {
 }
 
 async function CurrentDate() {
-  await io();
+  await connection();
 
   const date = new Intl.DateTimeFormat("bn-BD", {
     dateStyle: "full",
@@ -235,8 +235,8 @@ export default async function Home() {
           </h1>
 
           <p className="mt-5 max-w-lg leading-8 text-stone-600">
-            চাল, ডাল, মাছ, মাংস আর নিত্যপ্রয়োজনীয় পণ্যের আজকের দাম দেখুন
-            এক নজরে।
+            চাল, ডাল, মাছ, মাংস আর নিত্যপ্রয়োজনীয় পণ্যের আজকের দাম দেখুন এক
+            নজরে।
           </p>
 
           <a
@@ -251,10 +251,10 @@ export default async function Home() {
           <Image
             src="/bazar-hero.png"
             alt="বাজারের পণ্যে ভরা ঝুড়ি"
-            width={420}
-            height={320}
+            width={315}
+            height={263}
             priority
-            className="h-auto max-h-80 w-full max-w-md object-contain"
+            className="h-auto w-full max-w-md object-contain"
           />
         </div>
       </section>
