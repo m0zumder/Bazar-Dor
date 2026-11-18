@@ -3,6 +3,7 @@ import Link from "next/link";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import AuthNavigation from "@/app/components/AuthNavigation";
+import CategoryNav from "@/app/components/CategoryNav";
 
 type Product = {
   id: number;
@@ -186,17 +187,7 @@ export default async function Home() {
           <AuthNavigation />
         </div>
 
-        <nav className="mx-auto flex max-w-6xl gap-2 overflow-x-auto px-4 pb-4">
-          {categories.map(([name, slug, icon]) => (
-            <Link
-              key={slug}
-              href={`/category/${slug}`}
-              className="shrink-0 rounded-full bg-[#f5f4ed] px-4 py-2 text-sm hover:bg-[#e9eddf]"
-            >
-              {icon} {name}
-            </Link>
-          ))}
-        </nav>
+        <CategoryNav />
       </header>
 
       {products.length > 0 && (

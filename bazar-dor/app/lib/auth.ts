@@ -20,6 +20,7 @@ const socialProviders = {
         github: {
           clientId: githubClientId,
           clientSecret: githubClientSecret,
+          scope: ["user:email"],
         },
       }
     : {}),
@@ -31,10 +32,17 @@ export const auth = betterAuth({
   secret: process.env.BETTER_AUTH_SECRET,
 
   emailAndPassword: {
-  enabled: true,
-  requireEmailVerification: false,
-  autoSignIn: false,
-},
+    enabled: true,
+    requireEmailVerification: false,
+    autoSignIn: false,
+  },
+
+  account: {
+    accountLinking: {
+      enabled: true,
+      trustedProviders: ["google", "github"],
+    },
+  },
 
   ...(Object.keys(socialProviders).length > 0 ? { socialProviders } : {}),
 });

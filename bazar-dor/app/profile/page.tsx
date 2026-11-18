@@ -16,7 +16,9 @@ const shortcuts = [
 export default function ProfilePage() {
   const router = useRouter();
   const { data: session, isPending } = authClient.useSession();
+
   const [isSigningOut, setIsSigningOut] = useState(false);
+  const [isLinkingGithub, setIsLinkingGithub] = useState(false);
 
   async function copyEmail() {
     if (!session?.user.email) return;
@@ -26,6 +28,25 @@ export default function ProfilePage() {
       toast.success("ইমেইল কপি হয়েছে");
     } catch {
       toast.error("ইমেইল কপি করা যায়নি");
+    }
+  }
+
+  async function handleLinkGithub() {
+    setIsLinkingGithub(true);
+
+    try {
+      const { error } = await authClient.linkSocial({
+        provider: "github",
+        callbackURL: "/profile",
+      });
+
+      if (error) {
+        toast.error(error.message || "GitHub সংযুক্ত করা যায়নি");
+        setIsLinkingGithub(false);
+      }
+    } catch {
+      toast.error("GitHub সংযুক্ত করা যায়নি");
+      setIsLinkingGithub(false);
     }
   }
 
@@ -90,14 +111,17 @@ export default function ProfilePage() {
     .toUpperCase();
 
   const completion = Math.round(
-    ((name !== "ব্যবহারকারী" ? 1 : 0) + (email ? 1 : 0)) / 2 * 100,
+    (((name !== "ব্যবহারকারী" ? 1 : 0) + (email ? 1 : 0)) / 2) * 100,
   );
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-[#f5f4ed] via-[#fbfaf6] to-[#eaf2e9] px-4 py-8 text-[#25372b] sm:px-8">
       <div className="mx-auto max-w-6xl">
         <header className="mb-8 flex items-center justify-between">
-          <Link href="/" className="text-sm font-medium text-[#285b3c] hover:underline">
+          <Link
+            href="/"
+            className="text-sm font-medium text-[#285b3c] hover:underline"
+          >
             ← বাজার দর-এ ফিরে যান
           </Link>
           <span className="rounded-full border border-[#dce8dc] bg-white/80 px-4 py-2 text-xs font-semibold tracking-wide text-[#285b3c]">
@@ -111,12 +135,15 @@ export default function ProfilePage() {
 
           <div className="relative flex flex-col justify-between gap-8 sm:flex-row sm:items-center">
             <div>
-              <p className="text-sm text-green-100">আপনার বাজার দর account</p>
+              <p className="text-sm text-green-100">
+                আপনার বাজার দর account
+              </p>
               <h1 className="mt-2 text-3xl font-bold sm:text-4xl">
                 স্বাগতম, {name}!
               </h1>
               <p className="mt-3 max-w-xl text-sm leading-6 text-green-100 sm:text-base">
-                আপনার account-এর তথ্য এক জায়গায় দেখুন এবং প্রতিদিনের বাজার দর খুঁজে নিন।
+                আপনার account-এর তথ্য এক জায়গায় দেখুন এবং প্রতিদিনের বাজার দর
+                খুঁজে নিন।
               </p>
             </div>
 
@@ -126,7 +153,9 @@ export default function ProfilePage() {
               </div>
               <div className="min-w-0">
                 <p className="font-semibold">{name}</p>
-                <p className="max-w-52 truncate text-sm text-green-100">{email}</p>
+                <p className="max-w-52 truncate text-sm text-green-100">
+                  {email}
+                </p>
                 <span className="mt-2 inline-flex items-center gap-1.5 text-xs text-green-100">
                   <span className="h-2 w-2 rounded-full bg-emerald-300" />
                   account সক্রিয়
@@ -140,7 +169,9 @@ export default function ProfilePage() {
           <section className="rounded-3xl border border-stone-200/80 bg-white p-6 shadow-sm sm:p-8">
             <div className="flex items-start justify-between gap-4">
               <div>
-                <p className="text-sm font-medium text-[#6b756b]">ACCOUNT DETAILS</p>
+                <p className="text-sm font-medium text-[#6b756b]">
+                  ACCOUNT DETAILS
+                </p>
                 <h2 className="mt-1 text-2xl font-bold">প্রোফাইলের তথ্য</h2>
               </div>
               <span className="rounded-full bg-[#edf5eb] px-3 py-1.5 text-xs font-semibold text-[#285b3c]">
@@ -179,6 +210,26 @@ export default function ProfilePage() {
               <p className="mt-1 text-sm text-stone-500">
                 আপনার account-এর নাম ও ইমেইল profile-এ দেখানো হচ্ছে।
               </p>
+
+              <div className="mt-4 flex flex-wrap gap-3">
+                <Link
+                  href="/profile/update"
+                  className="inline-flex rounded-full bg-[#285b3c] px-5 py-3 font-medium text-white hover:bg-[#1e472e]"
+                >
+                  তথ্য পরিবর্তন
+                </Link>
+
+                <button
+                  type="button"
+                  onClick={handleLinkGithub}
+                  disabled={isLinkingGithub}
+                  className="inline-flex rounded-full border border-[#285b3c] px-5 py-3 font-medium text-[#285b3c] hover:bg-[#edf5eb] disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {isLinkingGithub
+                    ? "GitHub সংযুক্ত হচ্ছে…"
+                    : "GitHub account সংযুক্ত করুন"}
+                </button>
+              </div>
             </div>
           </section>
 
@@ -195,7 +246,9 @@ export default function ProfilePage() {
                     className="rounded-2xl bg-[#f8f7f2] p-4 transition hover:-translate-y-0.5 hover:bg-[#edf5eb]"
                   >
                     <span className="text-2xl">{item.icon}</span>
-                    <span className="mt-2 block font-semibold">{item.title}</span>
+                    <span className="mt-2 block font-semibold">
+                      {item.title}
+                    </span>
                     <span className="mt-1 block text-xs text-stone-500">
                       দাম দেখুন →
                     </span>

@@ -1,5 +1,7 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { headers } from "next/headers";
+import { notFound, redirect } from "next/navigation";
+import { auth } from "@/app/lib/auth";
 
 type Market = {
   market: string;
@@ -55,6 +57,13 @@ export default async function ProductPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
+  const session = await auth.api.getSession({
+  headers: await headers(),
+});
+
+if (!session) {
+  redirect("/signin");
+}
   const product = await getProduct(slug);
 
   if (!product || product.markets.length === 0) {
