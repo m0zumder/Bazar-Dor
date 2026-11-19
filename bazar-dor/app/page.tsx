@@ -20,17 +20,6 @@ type Product = {
 
 const API_URL = "https://openapi.programming-hero.com/api/bazardor/products";
 
-const categories = [
-  ["চাল", "chal", "🍚"],
-  ["ডাল", "dal", "🫘"],
-  ["সবজি", "sobji", "🥬"],
-  ["মাছ", "mach", "🐟"],
-  ["মাংস", "mangsho", "🍗"],
-  ["ডিম-দুধ", "dim-dui", "🥚"],
-  ["তেল", "tel", "🫙"],
-  ["মসলা", "mosla", "🌶️"],
-];
-
 const unitNames: Record<Product["unit"], string> = {
   kg: "প্রতি কেজি",
   litre: "প্রতি লিটার",
