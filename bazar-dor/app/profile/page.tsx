@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { auth } from "@/app/lib/auth";
 import ProfileClient from "./ProfileClient";
 
-export const dynamic = "force-dynamic";
+
 
 export default async function ProfilePage() {
   const session = await auth.api.getSession({
